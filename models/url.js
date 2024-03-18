@@ -1,17 +1,14 @@
 const mongoose = require('mongoose');
 
 const UrlSchema = new mongoose.Schema({ 
-  urlId: {
-    type: String,
-    required: true,
-  },
-  origUrl: {
+  originalUrl: {
     type: String,
     required: true,
   },
   shortUrl: {
     type: String,
     required: true,
+    unique: true,
   },
   clicks: {
     type: Number,
@@ -22,7 +19,26 @@ const UrlSchema = new mongoose.Schema({
     type: String,
     default: Date.now,
   },
+  createdBy: {
+    type: mongoose.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Please provide user']
+  }
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model('Url', UrlSchema);
+const Url = mongoose.model('Url', UrlSchema);
+ 
+function validateUrl(url) {
+  const schema = Joi.object({
+    originalUrl: Joi.string().uri().required(),  
+    customName: Joi.string().min(5).max(255), 
+   });
 
+  const validation = schema.validate(url);
+  return validation
+};
+
+exports.Url = Url;
+exports.validate = validateUrl;

@@ -4,7 +4,7 @@ const router  = express.Router();
 // require('../models/url')
 
 const {
-  getAllURLs: getAllUrls,
+  getAllUrls,
   getUrl,
   createUrl,
   updateUrl,
